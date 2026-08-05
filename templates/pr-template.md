@@ -1,33 +1,19 @@
-## 关联任务
+## 关联任务与目的
 
 Closes #
 
-## 变更目的
+## 修改与非目标
 
-## 主要修改
+## 验证
 
-## 非目标
+- [ ] lint / typecheck
+- [ ] 适用的单元、集成、契约或 E2E 测试
+- [ ] build / migration / security check
 
-## 测试结果
+## 影响
 
-- [ ] lint
-- [ ] typecheck
-- [ ] unit test
-- [ ] integration test
-- [ ] contract test
-- [ ] build
-- [ ] migration check
+- 数据库与 API 兼容性：
+- 权限与安全：
+- 发布风险与恢复方案：
 
-## 数据库影响
-
-## API兼容性
-
-## 权限与安全影响
-
-## 发布风险
-
-## 恢复方案
-
-## 页面截图
-
-## 已知问题
+## 截图与已知问题
