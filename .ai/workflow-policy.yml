@@ -1,0 +1,22 @@
+version: 1
+execution_mode: autonomous_ai
+manual_development_allowed: false
+manual_validation_allowed: false
+evidence_required: true
+independent_ai_verification_required: true
+external_authorization_mode: boundary_only
+
+stages:
+  - intake
+  - readiness
+  - planning
+  - implementation
+  - verification
+  - review
+  - delivery
+  - retrospective
+
+external_authorization_boundaries:
+  - missing_non_inferable_business_decision
+  - external_credentials_or_permissions
+  - irreversible_production_operation

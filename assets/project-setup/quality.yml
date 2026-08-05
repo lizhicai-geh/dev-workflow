@@ -1,4 +1,4 @@
-name: quality-gate
+name: ai-autonomous-quality-gate
 
 on:
   pull_request:
@@ -8,6 +8,8 @@ on:
 jobs:
   quality:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -22,3 +24,5 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+      - run: bash scripts/check-ai-autonomy.sh .
+      - run: bash scripts/check-project.sh .

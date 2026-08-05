@@ -5,6 +5,7 @@ SKILL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 QUALITY_SCRIPT="$SKILL_DIR/scripts/collect-quality-results.sh"
 PROJECT_SCRIPT="$SKILL_DIR/scripts/check-project.sh"
 MIGRATION_SCRIPT="$SKILL_DIR/scripts/check-migrations.sh"
+AUTONOMY_SCRIPT="$SKILL_DIR/scripts/check-ai-autonomy.sh"
 TEST_TMP="$(mktemp -d "${TMPDIR:-/tmp}/dev-workflow-tests.XXXXXX")"
 OUTPUT_FILE="$TEST_TMP/output.log"
 PASSED=0
@@ -110,6 +111,34 @@ assert_exit 0 "valid migration structure passes" "$MIGRATION_SCRIPT" "$MIGRATION
 printf 'select 2;\n' >"$MIGRATION_ROOT/01_duplicate.sql"
 assert_exit 1 "normalized duplicate migration prefix fails" "$MIGRATION_SCRIPT" "$MIGRATION_ROOT"
 assert_output "Duplicate migration prefixes found" "duplicate migration prefix is reported"
+
+AUTONOMY_ROOT="$TEST_TMP/autonomy-project"
+mkdir -p "$AUTONOMY_ROOT/.ai" "$AUTONOMY_ROOT/.github/workflows"
+printf '# AI 自主开发\n' >"$AUTONOMY_ROOT/AGENTS.md"
+printf '%s\n' \
+  'version: 1' \
+  'execution_mode: autonomous_ai' \
+  'manual_development_allowed: false' \
+  'manual_validation_allowed: false' \
+  'evidence_required: true' \
+  'independent_ai_verification_required: true' \
+  'external_authorization_mode: boundary_only' \
+  >"$AUTONOMY_ROOT/.ai/workflow-policy.yml"
+printf 'name: autonomy\njobs:\n  audit:\n    steps:\n      - run: bash scripts/check-ai-autonomy.sh .\n' \
+  >"$AUTONOMY_ROOT/.github/workflows/quality.yml"
+
+assert_exit 0 "autonomous AI project passes policy audit" "$AUTONOMY_SCRIPT" "$AUTONOMY_ROOT"
+assert_output "PASS  CI autonomy gate" "autonomy audit verifies the CI gate"
+
+NON_AI_MARKER="$(printf '人%s' '工验收')"
+printf '%s\n' "$NON_AI_MARKER" >"$AUTONOMY_ROOT/process.md"
+assert_exit 1 "non-AI execution marker fails policy audit" "$AUTONOMY_SCRIPT" "$AUTONOMY_ROOT"
+assert_output "BLOCK autonomous AI policy violations" "autonomy audit reports policy violations"
+
+rm -f "$AUTONOMY_ROOT/process.md"
+printf '%s\n' '- [ ] verify' >"$AUTONOMY_ROOT/process.md"
+assert_exit 1 "blank checklist gate fails policy audit" "$AUTONOMY_SCRIPT" "$AUTONOMY_ROOT"
+assert_output "process.md:1:- [ ] verify" "blank checklist evidence includes file and line"
 
 echo
 printf 'RESULT: %s passed, %s failed\n' "$PASSED" "$FAILED"
