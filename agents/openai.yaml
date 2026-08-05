@@ -1,0 +1,4 @@
+interface:
+  display_name: "开发流程"
+  short_description: "执行需求评审、开发、测试、发布与复盘的证据化流程门禁"
+  default_prompt: "使用 $dev-workflow 识别当前正式开发阶段，只加载相关资源，并给出有证据的门禁结论和下一步动作。"
