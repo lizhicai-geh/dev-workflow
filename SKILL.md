@@ -17,13 +17,19 @@ description: 执行从需求评审、任务拆分、实施计划、AI 编码、�
 
 | 阶段 | 读取 | 按需使用 |
 |---|---|---|
-| DoR 与分级 | [DoR](references/dor-checklist.md)、[L0–L3](references/requirement-levels.md) | [Issue 模板](templates/issue-template.md) |
-| 拆分与计划 | [任务拆分](references/task-decomposition.md)、[测试策略](references/testing-strategy.md) | [任务模板](templates/task-template.md)、[计划模板](templates/implementation-plan.md) |
-| 开发与 DoD | [开发循环](references/ai-development-loop.md)、[测试策略](references/testing-strategy.md)、[DoD](references/dod-checklist.md) | `scripts/collect-quality-results.sh` |
-| 代码、数据或安全审查 | [代码审查](references/code-review-checklist.md)、[数据库迁移](references/database-migration.md)、[安全](references/security-checklist.md) | [PR 模板](templates/pr-template.md)、`scripts/check-migrations.sh` |
-| 发布 | [发布检查](references/release-checklist.md)、[数据库迁移](references/database-migration.md) | [发布模板](templates/release-template.md)、质量与迁移脚本 |
+| DoR | [DoR](references/dor-checklist.md) | [Issue 模板](templates/issue-template.md) |
+| 需求分级 | [L0–L3](references/requirement-levels.md) | [Issue 模板](templates/issue-template.md) |
+| 任务拆分 | [任务拆分](references/task-decomposition.md) | [任务模板](templates/task-template.md) |
+| 实施计划 | [计划模板](templates/implementation-plan.md) | [测试策略](references/testing-strategy.md) |
+| 开发 | [开发循环](references/ai-development-loop.md)、[测试策略](references/testing-strategy.md) | `scripts/collect-quality-results.sh` |
+| 代码或 PR 审查 | [代码审查](references/code-review-checklist.md) | [PR 模板](templates/pr-template.md) |
+| DoD | [DoD](references/dod-checklist.md)、[测试策略](references/testing-strategy.md) | `scripts/collect-quality-results.sh` |
+| 数据库变更 | [数据库迁移](references/database-migration.md) | `scripts/check-migrations.sh` |
+| 安全评审 | [安全](references/security-checklist.md) | [PR 模板](templates/pr-template.md) |
+| 发布 | [发布检查](references/release-checklist.md) | [发布模板](templates/release-template.md)、质量脚本；涉及迁移时再读数据库规范 |
 | 事故 | [事故管理](references/incident-management.md) | [复盘模板](templates/incident-review.md) |
-| 成熟度或项目初始化 | [成熟度模型](references/maturity-model.md) | [评估模板](templates/workflow-review.md)、`scripts/check-project.sh`、[AGENTS 示例](examples/AGENTS.example.md)、[CI 示例](examples/github-actions.example.yml) |
+| 成熟度评估 | [成熟度模型](references/maturity-model.md) | [评估模板](templates/workflow-review.md)、`scripts/check-project.sh` |
+| 项目协作规范或 CI 初始化 | 当前项目技术栈资料 | [AGENTS 示例](examples/AGENTS.example.md)、[CI 示例](examples/github-actions.example.yml) |
 
 ## 风险与门禁
 
@@ -55,6 +61,10 @@ REQUIRED_QUALITY_CHECKS='lint,test' \
 ```
 
 质量脚本还支持 `TYPECHECK_CMD`、`BUILD_CMD`、`MIGRATION_CMD` 和 `SECURITY_CMD`。退出码 `0/1/2` 分别表示通过、检查失败、参数或配置错误。脚本只产生证据，不替代业务验收或发布决策。
+
+- 项目检查默认要求 `AGENTS.md`、`.gitignore`、测试和含质量命令的 CI；用 `REQUIRED_FILES`、`REQUIRE_TESTS`、`REQUIRE_CI`、`CHECK_PROJECT_DOCS` 和 `CI_QUALITY_REGEX` 调整。
+- 迁移检查默认要求非空文件及唯一数字前缀；用 `MIGRATION_NAME_REGEX` 覆盖命名规则，其首个捕获组必须为数字。
+- `REQUIRED_QUALITY_CHECKS` 仅接受 `lint,typecheck,test,build,migration,security`；`TEST_CMD` 应覆盖当前任务要求的测试层级。
 
 ## 输出
 

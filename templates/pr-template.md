@@ -6,9 +6,12 @@ Closes #
 
 ## 验证
 
-- [ ] lint / typecheck
+- [ ] lint
+- [ ] typecheck
 - [ ] 适用的单元、集成、契约或 E2E 测试
-- [ ] build / migration / security check
+- [ ] build
+- [ ] migration check
+- [ ] security check
 
 ## 影响
 
